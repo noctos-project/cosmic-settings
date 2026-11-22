@@ -61,6 +61,7 @@ git = "https://github.com/pop-os/cosmic-bg"
 [workspace.dependencies.cosmic-comp-config]
 git = "https://github.com/pop-os/cosmic-comp"
 features = ["output"]
+default-features = false
 
 [workspace.dependencies.cosmic-idle-config]
 git = "https://github.com/pop-os/cosmic-idle"
@@ -120,5 +121,64 @@ cosmic-client-toolkit = { git = "https://github.com/pop-os/cosmic-protocols//", 
 # upower_dbus = { path = "../dbus-settings-bindings/upower" }
 
 [patch.crates-io]
+# NoctOS: illumos-patched crates from the sibling cosmic-comp fork checkout
+calloop = { path = "../cosmic-comp/noctos-vendor/calloop" }
+polling = { path = "../cosmic-comp/noctos-vendor/polling" }
+wayland-backend = { path = "../cosmic-comp/noctos-vendor/wayland-backend" }
+# pulled in by softbuffer (software renderer); rustix has no ioctl opcode
+# helpers on illumos
+drm-ffi = { path = "../cosmic-comp/noctos-vendor/drm-ffi-0.7" }
 atspi = { git = "https://github.com/wash2/atspi" }
 atspi-common = { git = "https://github.com/wash2/atspi" }
+
+# NoctOS: pop-os/winit at the pinned rev 9567503 plus an illumos arm for
+# is_main_thread. Every crate of that workspace is redirected so the types
+# stay identical across the dependency graph.
+[patch."https://github.com/pop-os/winit.git"]
+dpi = { path = "../cosmic-launcher/noctos-vendor/winit/dpi" }
+winit = { path = "../cosmic-launcher/noctos-vendor/winit/winit" }
+winit-android = { path = "../cosmic-launcher/noctos-vendor/winit/winit-android" }
+winit-appkit = { path = "../cosmic-launcher/noctos-vendor/winit/winit-appkit" }
+winit-common = { path = "../cosmic-launcher/noctos-vendor/winit/winit-common" }
+winit-core = { path = "../cosmic-launcher/noctos-vendor/winit/winit-core" }
+winit-orbital = { path = "../cosmic-launcher/noctos-vendor/winit/winit-orbital" }
+winit-uikit = { path = "../cosmic-launcher/noctos-vendor/winit/winit-uikit" }
+winit-wayland = { path = "../cosmic-launcher/noctos-vendor/winit/winit-wayland" }
+winit-web = { path = "../cosmic-launcher/noctos-vendor/winit/winit-web" }
+winit-win32 = { path = "../cosmic-launcher/noctos-vendor/winit/winit-win32" }
+winit-x11 = { path = "../cosmic-launcher/noctos-vendor/winit/winit-x11" }
+
+# NoctOS: pop-os/softbuffer (tag cosmic-4.0, c2b2c19) with a POSIX-correct
+# shm_open name.
+[patch."https://github.com/pop-os/softbuffer"]
+softbuffer = { path = "../cosmic-launcher/noctos-vendor/softbuffer" }
+
+# NoctOS: libcosmic from the sibling fork checkout (pop-os/libcosmic 896b252,
+# the rev this tree locks, plus the fix that makes per-surface views work on
+# non-Linux Wayland platforms). Every crate that comes from that repository is
+# redirected so there is a single copy of each in the dependency graph.
+[patch."https://github.com/pop-os/libcosmic"]
+libcosmic = { path = "../libcosmic" }
+build_helpers = { path = "../libcosmic/iced/build_helpers" }
+cosmic-config = { path = "../libcosmic/cosmic-config" }
+cosmic-config-derive = { path = "../libcosmic/cosmic-config-derive" }
+cosmic-launch = { path = "../libcosmic/cosmic-launch" }
+cosmic-theme = { path = "../libcosmic/cosmic-theme" }
+iced = { path = "../libcosmic/iced" }
+iced_accessibility = { path = "../libcosmic/iced/accessibility" }
+iced_core = { path = "../libcosmic/iced/core" }
+iced_debug = { path = "../libcosmic/iced/debug" }
+iced_futures = { path = "../libcosmic/iced/futures" }
+iced_graphics = { path = "../libcosmic/iced/graphics" }
+iced_program = { path = "../libcosmic/iced/program" }
+iced_renderer = { path = "../libcosmic/iced/renderer" }
+iced_runtime = { path = "../libcosmic/iced/runtime" }
+iced_tiny_skia = { path = "../libcosmic/iced/tiny_skia" }
+iced_wgpu = { path = "../libcosmic/iced/wgpu" }
+iced_widget = { path = "../libcosmic/iced/widget" }
+iced_winit = { path = "../libcosmic/iced/winit" }
+
+# NoctOS: the fork's cosmic-comp-config makes libinput optional (upstream
+# links it, and with it libudev, unconditionally).
+[patch."https://github.com/pop-os/cosmic-comp"]
+cosmic-comp-config = { path = "../cosmic-comp/cosmic-comp-config" }
