@@ -121,6 +121,9 @@ cosmic-client-toolkit = { git = "https://github.com/pop-os/cosmic-protocols//", 
 # upower_dbus = { path = "../dbus-settings-bindings/upower" }
 
 [patch.crates-io]
+# NoctOS: notify with a native illumos backend (event ports), so that
+# config-file changes are noticed as they are on Linux.
+notify = { path = "../cosmic-comp/noctos-vendor/notify" }
 # NoctOS: illumos-patched crates from the sibling cosmic-comp fork checkout
 calloop = { path = "../cosmic-comp/noctos-vendor/calloop" }
 polling = { path = "../cosmic-comp/noctos-vendor/polling" }
